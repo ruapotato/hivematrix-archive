@@ -104,8 +104,8 @@
                         <td>{{ snapshot.archived_at[:10] }}</td>
                         <td>${{ "%.2f"|format(snapshot.total_amount) }}</td>
                         <td class="actions">
-                            <a href="/api/snapshot/{{ snapshot.invoice_number }}" class="btn btn-secondary" target="_blank">View JSON</a>
-                            <a href="/api/snapshot/{{ snapshot.invoice_number }}/csv" class="btn">Download CSV</a>
+                            <a href="api/snapshot/{{ snapshot.invoice_number }}" class="btn btn-secondary" target="_blank">View JSON</a>
+                            <a href="api/snapshot/{{ snapshot.invoice_number }}/csv" class="btn">Download CSV</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -125,7 +125,9 @@
 
     <script>
         // Load scheduler configuration
-        fetch('/api/scheduler/config')
+        fetch('api/scheduler/config', {
+            credentials: 'same-origin'
+        })
             .then(response => response.json())
             .then(data => {
                 const config = data.config;
@@ -169,7 +171,9 @@
             if (year) params.append('year', year);
             if (month) params.append('month', month);
 
-            fetch('/api/snapshots/search?' + params.toString())
+            fetch('api/snapshots/search?' + params.toString(), {
+                credentials: 'same-origin'
+            })
                 .then(response => response.json())
                 .then(data => {
                     const resultsDiv = document.getElementById('searchResults');
@@ -197,8 +201,8 @@
                                 <td>${s.archived_at.substring(0, 10)}</td>
                                 <td>$${s.total_amount.toFixed(2)}</td>
                                 <td class="actions">
-                                    <a href="/api/snapshot/${s.invoice_number}" class="btn btn-secondary" target="_blank">View</a>
-                                    <a href="/api/snapshot/${s.invoice_number}/csv" class="btn">CSV</a>
+                                    <a href="api/snapshot/${s.invoice_number}" class="btn btn-secondary" target="_blank">View</a>
+                                    <a href="api/snapshot/${s.invoice_number}/csv" class="btn">CSV</a>
                                 </td>
                             </tr>
                         `;
