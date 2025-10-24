@@ -15,21 +15,27 @@ Archive stores finalized billing snapshots sent from Ledger. It provides:
 # 1. Install PostgreSQL and create database
 sudo apt-get install postgresql postgresql-contrib
 sudo -u postgres psql -c "CREATE DATABASE archive_db;"
-sudo -u postgres psql -c "CREATE USER archive_user WITH PASSWORD 'your-password';"
+sudo -u postgres psql -c "CREATE USER archive_user WITH PASSWORD 'Integotec@123';"
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE archive_db TO archive_user;"
 
-# 2. Run installation script
+# 2. Grant schema permissions (PostgreSQL 15+ REQUIRED)
+sudo -u postgres psql -d archive_db -c "GRANT ALL ON SCHEMA public TO archive_user;"
+sudo -u postgres psql -d archive_db -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO archive_user;"
+sudo -u postgres psql -d archive_db -c "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO archive_user;"
+
+# 3. Run installation script
 ./install.sh
 
-# 3. Initialize database schema
+# 4. Initialize database schema
 source pyenv/bin/activate
 python init_db.py
+# Press Enter for all prompts to use defaults (localhost, port 5432, etc.)
 
-# 4. Start service
+# 5. Start service
 python run.py
 # Or for development: flask run --port=5012
 
-# 5. Verify
+# 6. Verify
 curl http://localhost:5012/health
 ```
 
@@ -74,21 +80,25 @@ sudo -u postgres psql
 CREATE DATABASE archive_db;
 
 -- Create user with password
-CREATE USER archive_user WITH ENCRYPTED PASSWORD 'your-secure-password-here';
+CREATE USER archive_user WITH ENCRYPTED PASSWORD 'Integotec@123';
 
 -- Grant privileges
 GRANT ALL PRIVILEGES ON DATABASE archive_db TO archive_user;
 
--- Connect to the database
-\c archive_db
-
--- Grant schema privileges (PostgreSQL 15+)
-GRANT ALL ON SCHEMA public TO archive_user;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO archive_user;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO archive_user;
-
 -- Exit psql
 \q
+```
+
+**IMPORTANT: Grant schema permissions** (PostgreSQL 15+)
+```bash
+# These commands MUST be run to allow archive_user to create tables
+sudo -u postgres psql -d archive_db -c "GRANT ALL ON SCHEMA public TO archive_user;"
+sudo -u postgres psql -d archive_db -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO archive_user;"
+sudo -u postgres psql -d archive_db -c "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO archive_user;"
+
+# Optional: Set default privileges for future tables
+sudo -u postgres psql -d archive_db -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO archive_user;"
+sudo -u postgres psql -d archive_db -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO archive_user;"
 ```
 
 **Test the connection:**
@@ -446,6 +456,28 @@ journalctl -u archive-snapshot.service -n 50
 
 ## Troubleshooting
 
+**Database initialization fails with "permission denied for schema public":**
+
+This is a common PostgreSQL 15+ issue. Fix with:
+```bash
+# Run these commands to grant schema permissions
+sudo -u postgres psql -d archive_db -c "GRANT ALL ON SCHEMA public TO archive_user;"
+sudo -u postgres psql -d archive_db -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO archive_user;"
+sudo -u postgres psql -d archive_db -c "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO archive_user;"
+
+# Then re-run init_db.py
+source pyenv/bin/activate
+python init_db.py
+```
+
+**Table "billing_snapshots" does not exist:**
+
+Database schema not initialized. Run:
+```bash
+source pyenv/bin/activate
+python init_db.py
+```
+
 **Scheduler not running:**
 - Check timer: `systemctl status archive-snapshot.timer`
 - Check service logs: `journalctl -u archive-snapshot.service`
@@ -458,11 +490,11 @@ journalctl -u archive-snapshot.service -n 50
 - Check Codex connectivity (Ledger needs Codex data)
 - Review job details: `GET /api/scheduler/jobs/{job_id}`
 
-**Database errors:**
-- Check PostgreSQL is running
-- Verify connection string in instance/archive.conf
-- Check database permissions
-- Review migrations: `python init_db.py --migrate-only`
+**Database connection errors:**
+- Check PostgreSQL is running: `sudo systemctl status postgresql`
+- Verify connection string in `instance/archive.conf`
+- Test connection manually: `psql -U archive_user -d archive_db -h localhost`
+- Check database exists: `sudo -u postgres psql -l | grep archive_db`
 
 ## Integration with Other Services
 
