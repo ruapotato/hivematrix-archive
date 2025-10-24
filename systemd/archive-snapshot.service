@@ -1,0 +1,16 @@
+[Unit]
+Description=Archive Billing Snapshot Creator
+After=network.target postgresql.service
+
+[Service]
+Type=oneshot
+User=hivematrix
+Group=hivematrix
+WorkingDirectory=/opt/hivematrix/hivematrix-archive
+Environment="PATH=/opt/hivematrix/hivematrix-archive/venv/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=/opt/hivematrix/hivematrix-archive/venv/bin/python3 /opt/hivematrix/hivematrix-archive/scheduled_snapshots.py
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
