@@ -171,7 +171,3 @@ if __name__ == '__main__':
         sys.exit(1)
 
     init_db(args)
-
-
-if __name__ == '__main__':
-    init_db()
