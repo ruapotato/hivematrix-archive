@@ -166,8 +166,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.headless and not args.password:
-        print("Error: --password is required when using --headless mode", file=sys.stderr)
+    if args.headless and not args.db_password:
+        print("Error: --db-password is required when using --headless mode", file=sys.stderr)
         sys.exit(1)
 
     init_db(args)
