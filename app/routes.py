@@ -135,7 +135,7 @@ def create_snapshot():
         billable_hours=float(data.get('billable_hours', 0)),
         billing_data_json=json.dumps(data['billing_data_json']),
         invoice_csv=data['invoice_csv'],
-        created_by=data.get('created_by', g.user.get('email') if hasattr(g, 'user') else 'api'),
+        created_by=data.get('created_by', g.user.get('email') if hasattr(g, 'user') and g.user else 'api'),
         notes=data.get('notes')
     )
 
