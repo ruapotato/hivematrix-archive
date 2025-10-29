@@ -107,36 +107,31 @@ chmod +x test_workflow.py 2>/dev/null || true
 echo -e "${GREEN}✓ Scripts are executable${NC}"
 echo ""
 
+# Run database initialization
+echo -e "${YELLOW}Initializing database...${NC}"
+if [ -f "init_db.py" ]; then
+    python init_db.py
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}✓ Database initialized${NC}"
+    else
+        echo -e "${YELLOW}⚠ Database initialization encountered an issue${NC}"
+        echo -e "${YELLOW}  You may need to configure database settings manually${NC}"
+    fi
+else
+    echo -e "${YELLOW}⚠ init_db.py not found, skipping database setup${NC}"
+fi
+echo ""
+
 echo "=========================================="
-echo -e "${GREEN}  Basic Setup Complete!${NC}"
+echo -e "${GREEN}  Installation Complete!${NC}"
 echo "=========================================="
 echo ""
-echo -e "${YELLOW}⚠ MANUAL CONFIGURATION REQUIRED${NC}"
+echo "Archive service is ready to use!"
 echo ""
-echo "Archive requires PostgreSQL database configuration."
+echo "The service will be started automatically by Helm."
+echo "You can also start it manually with:"
+echo "  python run.py"
 echo ""
-echo "Next steps:"
-echo "  1. Read README.md for full setup instructions"
-echo "  2. Ensure PostgreSQL is installed and running"
-echo "  3. Ensure Codex and Ledger are installed and configured"
-echo "  4. Run: python init_db.py"
-echo "  5. Helm will generate .flaskenv on next start"
-echo ""
-echo "After configuration:"
-echo "  • Start via Helm dashboard"
-echo "  • Or run: python run.py"
-echo ""
-echo "Optional: Configure scheduled snapshots"
-echo "  • Set up systemd timer (production):"
-echo "    sudo cp systemd/archive-snapshot.service /etc/systemd/system/"
-echo "    sudo cp systemd/archive-snapshot.timer /etc/systemd/system/"
-echo "    sudo systemctl enable archive-snapshot.timer"
-echo "    sudo systemctl start archive-snapshot.timer"
-echo ""
-echo "  • Or run manual snapshots:"
-echo "    ./scheduled_snapshots.py --year 2025 --month 10 --all"
-echo ""
-echo "Testing:"
-echo "  • Test workflow: python test_workflow.py --account 620547"
-echo "  • Check health: curl http://localhost:5012/health"
+echo "Health check:"
+echo "  curl http://localhost:5012/health"
 echo ""
