@@ -25,11 +25,11 @@ def get_db_credentials(args=None):
     if args and args.headless:
         # Headless mode - use defaults or command-line args
         return {
-            'host': args.host or 'localhost',
-            'port': args.port or '5432',
-            'dbname': args.database or 'archive_db',
-            'user': args.user or 'archive_user',
-            'password': args.password or ''
+            'host': args.db_host or 'localhost',
+            'port': args.db_port or '5432',
+            'dbname': args.db_name or 'archive_db',
+            'user': args.db_user or 'archive_user',
+            'password': args.db_password or ''
         }
     else:
         # Interactive mode
@@ -153,15 +153,15 @@ if __name__ == '__main__':
     )
     parser.add_argument('--headless', action='store_true',
                        help='Run in non-interactive mode (for automated installs)')
-    parser.add_argument('--host', default='localhost',
+    parser.add_argument('--db-host', default='localhost',
                        help='Database host (default: localhost)')
-    parser.add_argument('--port', default='5432',
+    parser.add_argument('--db-port', default='5432',
                        help='Database port (default: 5432)')
-    parser.add_argument('--database', default='archive_db',
+    parser.add_argument('--db-name', default='archive_db',
                        help='Database name (default: archive_db)')
-    parser.add_argument('--user', default='archive_user',
+    parser.add_argument('--db-user', default='archive_user',
                        help='Database user (default: archive_user)')
-    parser.add_argument('--password', default='',
+    parser.add_argument('--db-password', default='',
                        help='Database password (required for headless mode)')
 
     args = parser.parse_args()
