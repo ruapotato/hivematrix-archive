@@ -1,0 +1,33 @@
+# Python virtual environment
+pyenv/
+venv/
+env/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Instance folder
+instance/*.conf
+instance/*.db
+
+# Environment variables
+.env
+.flaskenv.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
