@@ -29,6 +29,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = config.get('database', 'connection_strin
     fallback=f"sqlite:///{os.path.join(app.instance_path, 'archive.db')}")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Enable template auto-reload for development
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+
 # Load services configuration for service-to-service calls
 try:
     with open('services.json') as f:
