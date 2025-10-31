@@ -18,6 +18,9 @@ instance/*.db
 .env
 .flaskenv.local
 
+# Service registry (symlinked from helm)
+services.json
+
 # IDE
 .vscode/
 .idea/
