@@ -113,7 +113,11 @@ def init_db(args=None):
 
     # Initialize database schema
     with app.app_context():
-        print("\nInitializing database schema...")
+        if args and args.migrate_only:
+            print("\nUpdating database schema (migrate-only mode)...")
+        else:
+            print("\nInitializing database schema...")
+
         db.create_all()
         print("✓ Database schema initialized successfully!")
 
@@ -136,13 +140,15 @@ def init_db(args=None):
     print("\n" + "="*80)
     print(" 🎉 Archive Initialization Complete!")
     print("="*80)
-    print("\nArchive stores immutable billing snapshots for historical record-keeping.")
-    print("\nNext steps:")
-    print("  1. Start the Archive service:")
-    print("     → flask run --port=5012         # Development")
-    print("     → python run.py                 # Production (Waitress)")
-    print("\n  2. Configure Ledger to send snapshots to Archive")
-    print("\n  3. Set up scheduled snapshots (automated on 1st of each month)")
+
+    if not (args and args.migrate_only):
+        print("\nArchive stores immutable billing snapshots for historical record-keeping.")
+        print("\nNext steps:")
+        print("  1. Start the Archive service:")
+        print("     → flask run --port=5012         # Development")
+        print("     → python run.py                 # Production (Waitress)")
+        print("\n  2. Configure Ledger to send snapshots to Archive")
+        print("\n  3. Set up scheduled snapshots (automated on 1st of each month)")
     print("="*80)
 
 
@@ -163,6 +169,8 @@ if __name__ == '__main__':
                        help='Database user (default: archive_user)')
     parser.add_argument('--db-password', default='',
                        help='Database password (required for headless mode)')
+    parser.add_argument('--migrate-only', action='store_true',
+                       help='Only run migrations on existing database (still creates missing tables)')
 
     args = parser.parse_args()
 
