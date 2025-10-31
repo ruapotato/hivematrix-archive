@@ -4,122 +4,183 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Archive - Historical Billing</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; padding: 20px; }
-        .container { max-width: 1400px; margin: 0 auto; }
-        .header { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .header h1 { font-size: 24px; color: #333; }
-        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .stat-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .stat-card h3 { font-size: 14px; color: #666; margin-bottom: 5px; font-weight: 500; }
-        .stat-card .value { font-size: 32px; color: #333; font-weight: 600; }
-        .card { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .card h2 { font-size: 18px; color: #333; margin-bottom: 15px; }
-        .search-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .search-bar input, .search-bar select { padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
-        .search-bar input { flex: 1; min-width: 200px; }
-        .search-bar button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
-        .search-bar button:hover { background: #0056b3; }
-        table { width: 100%; border-collapse: collapse; }
-        table th, table td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
-        table th { background: #f8f9fa; font-weight: 600; color: #555; font-size: 13px; text-transform: uppercase; }
-        table tr:hover { background: #f8f9fa; }
-        .btn { display: inline-block; padding: 8px 16px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; font-size: 14px; }
-        .btn:hover { background: #0056b3; }
-        .btn-secondary { background: #6c757d; }
-        .btn-secondary:hover { background: #545b62; }
-        .empty { text-align: center; padding: 40px; color: #999; }
-        .badge { display: inline-block; padding: 4px 8px; border-radius: 3px; font-size: 12px; font-weight: 500; }
-        .badge-success { background: #d4edda; color: #155724; }
-        .badge-warning { background: #fff3cd; color: #856404; }
-        .actions { display: flex; gap: 8px; }
+        /* Custom styles specific to Archive */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: #313244;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #89b4fa;
+        }
+        .stat-card__label {
+            color: #7f849c;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .stat-card__value {
+            color: #cdd6f4;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .scheduler-info {
+            background: #313244;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        .scheduler-info p {
+            margin: 0.5rem 0;
+            color: #cdd6f4;
+        }
+        .scheduler-info strong {
+            color: #89b4fa;
+        }
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .badge--warning {
+            background: #f9e2af;
+            color: #1e1e2e;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>📦 Archive - Historical Billing</h1>
-            <p style="color: #666; margin-top: 5px;">Immutable billing snapshots for historical record-keeping</p>
+    <div class="card">
+        <div class="card__header">
+            <h1 class="card__title">📦 Archive - Historical Billing</h1>
         </div>
+        <div class="card__body">
+            <p style="color: #7f849c; margin-bottom: 2rem;">Immutable billing snapshots for historical record-keeping</p>
 
-        <div class="stats">
-            <div class="stat-card">
-                <h3>Total Snapshots</h3>
-                <div class="value">{{ total_snapshots }}</div>
-            </div>
-            <div class="stat-card">
-                <h3>Companies Archived</h3>
-                <div class="value">{{ total_companies }}</div>
-            </div>
-            <div class="stat-card">
-                <h3>Archive Status</h3>
-                <div class="value" style="font-size: 20px;">✓ Active</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card__label">Total Snapshots</div>
+                    <div class="stat-card__value">{{ total_snapshots }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__label">Companies Archived</div>
+                    <div class="stat-card__value">{{ total_companies }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__label">Archive Status</div>
+                    <div class="stat-card__value" style="font-size: 1.25rem;">✓ Active</div>
+                </div>
             </div>
         </div>
+    </div>
 
-        <div class="card">
-            <h2>Search Historical Bills</h2>
-            <div class="search-bar">
-                <input type="text" id="searchAccount" placeholder="Account Number">
-                <input type="text" id="searchCompany" placeholder="Company Name">
-                <select id="searchYear">
-                    <option value="">All Years</option>
-                    {% for year in range(2020, 2030) %}
-                    <option value="{{ year }}">{{ year }}</option>
-                    {% endfor %}
-                </select>
-                <select id="searchMonth">
-                    <option value="">All Months</option>
-                    {% for month in range(1, 13) %}
-                    <option value="{{ month }}">{{ "%02d"|format(month) }} - {{ ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][month-1] }}</option>
-                    {% endfor %}
-                </select>
-                <button onclick="searchSnapshots()">Search</button>
-                <button onclick="clearSearch()" style="background: #6c757d;">Clear</button>
+    <div class="card">
+        <div class="card__header">
+            <h2 class="card__title">Search Historical Bills</h2>
+        </div>
+        <div class="card__body">
+            <div class="search-form">
+                <div class="search-form__controls">
+                    <input type="text" id="searchAccount" placeholder="Account Number" class="search-form__input">
+                    <input type="text" id="searchCompany" placeholder="Company Name" class="search-form__input">
+                    <select id="searchYear" class="search-form__input" style="flex: 0 0 150px;">
+                        <option value="">All Years</option>
+                        {% for year in range(2020, 2030) %}
+                        <option value="{{ year }}">{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                    <select id="searchMonth" class="search-form__input" style="flex: 0 0 150px;">
+                        <option value="">All Months</option>
+                        {% for month in range(1, 13) %}
+                        <option value="{{ month }}">{{ "%02d"|format(month) }} - {{ ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][month-1] }}</option>
+                        {% endfor %}
+                    </select>
+                    <button onclick="searchSnapshots()" class="btn btn--primary">
+                        <span class="btn__label">
+                            <i data-lucide="search" class="btn__icon"></i>
+                            Search
+                        </span>
+                    </button>
+                    <button onclick="clearSearch()" class="btn">
+                        <span class="btn__label">
+                            <i data-lucide="x" class="btn__icon"></i>
+                            Clear
+                        </span>
+                    </button>
+                </div>
             </div>
             <div id="searchResults"></div>
         </div>
+    </div>
 
-        <div class="card">
-            <h2>Recent Snapshots</h2>
+    <div class="card">
+        <div class="card__header">
+            <h2 class="card__title">Recent Snapshots</h2>
+        </div>
+        <div class="card__body">
             {% if recent_snapshots %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Invoice Number</th>
-                        <th>Company</th>
-                        <th>Period</th>
-                        <th>Archived</th>
-                        <th>Total Amount</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for snapshot in recent_snapshots %}
-                    <tr>
-                        <td><strong>{{ snapshot.invoice_number }}</strong></td>
-                        <td>{{ snapshot.company_name }}</td>
-                        <td>{{ snapshot.billing_year }}-{{ "%02d"|format(snapshot.billing_month) }}</td>
-                        <td>{{ snapshot.archived_at[:10] }}</td>
-                        <td>${{ "%.2f"|format(snapshot.total_amount) }}</td>
-                        <td class="actions">
-                            <a href="api/snapshot/{{ snapshot.invoice_number }}" class="btn btn-secondary" target="_blank">View JSON</a>
-                            <a href="api/snapshot/{{ snapshot.invoice_number }}/csv" class="btn">Download CSV</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Invoice Number</th>
+                            <th>Company</th>
+                            <th>Period</th>
+                            <th>Archived</th>
+                            <th>Total Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for snapshot in recent_snapshots %}
+                        <tr>
+                            <td><strong>{{ snapshot.invoice_number }}</strong></td>
+                            <td>{{ snapshot.company_name }}</td>
+                            <td>{{ snapshot.billing_year }}-{{ "%02d"|format(snapshot.billing_month) }}</td>
+                            <td>{{ snapshot.archived_at[:10] }}</td>
+                            <td>${{ "%.2f"|format(snapshot.total_amount) }}</td>
+                            <td>
+                                <div class="actions">
+                                    <a href="api/snapshot/{{ snapshot.invoice_number }}" class="btn btn--small" target="_blank">
+                                        <span class="btn__label">
+                                            <i data-lucide="file-json" class="btn__icon"></i>
+                                            View JSON
+                                        </span>
+                                    </a>
+                                    <a href="api/snapshot/{{ snapshot.invoice_number }}/csv" class="btn btn--primary btn--small">
+                                        <span class="btn__label">
+                                            <i data-lucide="download" class="btn__icon"></i>
+                                            Download CSV
+                                        </span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             {% else %}
-            <div class="empty">No snapshots archived yet. Bills will appear here once accepted in Ledger.</div>
+            <div class="empty-state">
+                <i data-lucide="archive" style="width: 48px; height: 48px; margin-bottom: 1rem; color: #7f849c;"></i>
+                <p>No snapshots archived yet. Bills will appear here once accepted in Ledger.</p>
+            </div>
             {% endif %}
         </div>
+    </div>
 
-        <div class="card">
-            <h2>Scheduled Snapshots</h2>
-            <p style="color: #666; margin-bottom: 15px;">Automated snapshot creation is configured to run on a schedule.</p>
-            <div id="schedulerInfo">Loading...</div>
+    <div class="card">
+        <div class="card__header">
+            <h2 class="card__title">Scheduled Snapshots</h2>
+        </div>
+        <div class="card__body">
+            <p style="color: #7f849c; margin-bottom: 1.5rem;">Automated snapshot creation is configured to run on a schedule.</p>
+            <div id="schedulerInfo" class="scheduler-info">
+                <p style="color: #7f849c; font-style: italic;">Loading scheduler configuration...</p>
+            </div>
         </div>
     </div>
 
@@ -134,13 +195,13 @@
                 const infoDiv = document.getElementById('schedulerInfo');
 
                 if (!config) {
-                    infoDiv.innerHTML = '<p style="color: #999;">No scheduler configuration found.</p>';
+                    infoDiv.innerHTML = '<p style="color: #7f849c;">No scheduler configuration found.</p>';
                     return;
                 }
 
                 const statusBadge = config.enabled
-                    ? '<span class="badge badge-success">Enabled</span>'
-                    : '<span class="badge badge-warning">Disabled</span>';
+                    ? '<span class="badge badge--success">Enabled</span>'
+                    : '<span class="badge badge--warning">Disabled</span>';
 
                 const lastRun = config.last_run_at
                     ? new Date(config.last_run_at).toLocaleString()
@@ -156,7 +217,7 @@
                 `;
             })
             .catch(err => {
-                document.getElementById('schedulerInfo').innerHTML = '<p style="color: #dc3545;">Error loading scheduler info.</p>';
+                document.getElementById('schedulerInfo').innerHTML = '<p style="color: #f38ba8;">Error loading scheduler info.</p>';
             });
 
         // Search functionality
@@ -179,12 +240,12 @@
                     const resultsDiv = document.getElementById('searchResults');
 
                     if (data.results.length === 0) {
-                        resultsDiv.innerHTML = '<div class="empty">No snapshots found matching your criteria.</div>';
+                        resultsDiv.innerHTML = '<div class="empty-state">No snapshots found matching your criteria.</div>';
                         return;
                     }
 
-                    let html = `<p style="margin-bottom: 10px; color: #666;">Found ${data.total} snapshots</p>`;
-                    html += '<table><thead><tr><th>Invoice</th><th>Company</th><th>Period</th><th>Archived</th><th>Total</th><th>Actions</th></tr></thead><tbody>';
+                    let html = `<p style="margin-bottom: 1rem; color: #7f849c;">Found ${data.total} snapshots</p>`;
+                    html += '<div class="table-wrapper"><table class="data-table"><thead><tr><th>Invoice</th><th>Company</th><th>Period</th><th>Archived</th><th>Total</th><th>Actions</th></tr></thead><tbody>';
 
                     // Filter by company name if specified
                     let results = data.results;
@@ -200,19 +261,32 @@
                                 <td>${s.billing_year}-${s.billing_month.toString().padStart(2, '0')}</td>
                                 <td>${s.archived_at.substring(0, 10)}</td>
                                 <td>$${s.total_amount.toFixed(2)}</td>
-                                <td class="actions">
-                                    <a href="api/snapshot/${s.invoice_number}" class="btn btn-secondary" target="_blank">View</a>
-                                    <a href="api/snapshot/${s.invoice_number}/csv" class="btn">CSV</a>
+                                <td>
+                                    <div class="actions">
+                                        <a href="api/snapshot/${s.invoice_number}" class="btn btn--small" target="_blank">
+                                            <span class="btn__label">
+                                                <i data-lucide="file-json" class="btn__icon"></i>
+                                                View
+                                            </span>
+                                        </a>
+                                        <a href="api/snapshot/${s.invoice_number}/csv" class="btn btn--primary btn--small">
+                                            <span class="btn__label">
+                                                <i data-lucide="download" class="btn__icon"></i>
+                                                CSV
+                                            </span>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         `;
                     });
 
-                    html += '</tbody></table>';
+                    html += '</tbody></table></div>';
                     resultsDiv.innerHTML = html;
+                    lucide.createIcons();
                 })
                 .catch(err => {
-                    document.getElementById('searchResults').innerHTML = '<div class="empty" style="color: #dc3545;">Error performing search.</div>';
+                    document.getElementById('searchResults').innerHTML = '<div class="alert alert--error">Error performing search.</div>';
                 });
         }
 
@@ -223,6 +297,11 @@
             document.getElementById('searchMonth').value = '';
             document.getElementById('searchResults').innerHTML = '';
         }
+
+        // Initialize Lucide icons
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
     </script>
 </body>
 </html>
